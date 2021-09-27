@@ -15,14 +15,14 @@
     [class.has-feedback]="!email.valid && email.touched">
     <label class="control-label" for="email">Email</label>
     <input type="email" class="form-control" id="email" name="email" placeholder="nome@email.com"
-      [ngModel]="usuario.email" required #email="ngModel">
+      [ngModel]="usuario.email" required email #email="ngModel">
 
     <div *ngIf="!email.valid && email.touched" class="alert alert-danger" role="alert">
       Email inválido
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary"
-    [disabled]="!f.valid"
-  >Submit</button>
+  <button type="submit" class="btn btn-primary" [disabled]="!f.valid">Submit</button>
+
+  <app-form-debug [form]="f"></app-form-debug>
 </form>

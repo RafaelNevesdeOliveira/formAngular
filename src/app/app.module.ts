@@ -6,13 +6,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DataFormComponent } from './data-form/data-form.component';
-import { FormDebugComponent } from './form-debug/form-debug.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DataFormComponent,
-    FormDebugComponent,
   ],
   imports: [
     BrowserModule,
