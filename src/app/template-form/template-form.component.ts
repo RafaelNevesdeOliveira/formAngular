@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-template-form',
   templateUrl: './template-form.component.html',
@@ -24,7 +25,7 @@ export class TemplateFormComponent implements OnInit {
     console.log(this.usuario)
   }
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
   }
@@ -38,6 +39,56 @@ export class TemplateFormComponent implements OnInit {
       'has-error': this.verificaValidTouched(campo),
       'has-feedback': this.verificaValidTouched(campo),
     }
+  }
+
+  consultaCEP(cep:any, form: any){
+    // console.log(cep)
+    cep = cep.replace(/\D/g, '');
+
+    this.resetaDadosForm(form)
+    if (cep!= ""){
+      this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe(data => this.populaDadosForm(data, form))
+    }
+  }
+
+  populaDadosForm(data:any, formulario: any){
+    // formulario.setValue({
+    //   nome: formulario.value.nome,
+    //   email: formulario.value.email,
+    //   endereco: {
+    //     rua: data.logradouro ,
+    //     cep: data.cep,
+    //     numero: '',
+    //     complemento: data.complemento ,
+    //     bairro: data.bairro ,
+    //     cidade: data.localidade,
+    //     estado: data.uf
+    //   }
+    // });
+
+    formulario.form.patchValue({
+      endereco: {
+        rua: data.logradouro ,
+        cep: data.cep,
+        complemento: data.complemento ,
+        bairro: data.bairro ,
+        cidade: data.localidade,
+        estado: data.uf
+      }
+    })
+    // console.log(formulario);
+  }
+
+  resetaDadosForm(formulario:any){
+    formulario.form.patchValue({
+      endereco: {
+        rua: null ,
+        complemento: null,
+        bairro: null ,
+        cidade: null,
+        estado: null
+      }
+    })
   }
 
 }
