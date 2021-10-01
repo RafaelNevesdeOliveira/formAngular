@@ -13,11 +13,7 @@ export class DataFormComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // this.formulario = new FormGroup({
-    //   nome: new FormControl(null), null é valor inicial do form
-    //   email: new FormControl(null)
-    // });
-
+    // INICIALIZADOR DO FORM E VALIDATOR
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null,[Validators.required, Validators.email]],
@@ -32,10 +28,29 @@ export class DataFormComponent implements OnInit {
       .post('http://httpbin.org/post', JSON.stringify(this.formulario.value))
       .subscribe((data) => {
         console.log(data);
-        // this.resetar()
+        this.resetar()
       },
       // (error:any) => alert('deu ruim')
       )
+  }
+
+  verificaValidTouched(campo: any){
+    return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
+
+  }
+
+  verificaEmailInvalido(){
+    let campoEmail = this.formulario.get('email')
+    if(campoEmail?.errors){
+      return campoEmail.errors.required && campoEmail.touched
+    }
+  }
+
+  aplicaCssErro(campo:any){
+    return {
+      'has-error': this.verificaValidTouched(campo),
+      'has-feedback': this.verificaValidTouched(campo),
+    }
   }
 
   resetar(){
