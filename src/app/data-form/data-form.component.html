@@ -1,1 +1,23 @@
-<p>data-form works!</p>
+<form [formGroup]="formulario">
+  <div class="form-group col-mb-12">
+    <label class="control-label" for="nome">Nome</label>
+    <input type="text" class="form-control" id="nome" formControlName="nome" placeholder="Nome"  />
+
+  </div>
+
+  <div class="form-group col-mb-12 py-3">
+    <label class="control-label" for="email">Email</label>
+    <input type="email" class="form-control" id="email" formControlName="email" placeholder="nome@email.com" />
+
+  </div>
+
+
+
+  <div class="col-auto py-3">
+    <button type="submit" class="btn btn-primary" >
+      Submit
+    </button>
+  </div>
+</form>
+
+<app-form-debug [form]="formulario"></app-form-debug>
