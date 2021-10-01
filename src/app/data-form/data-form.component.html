@@ -1,4 +1,4 @@
-<form [formGroup]="formulario">
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
   <div class="form-group col-mb-12">
     <label class="control-label" for="nome">Nome</label>
     <input type="text" class="form-control" id="nome" formControlName="nome" placeholder="Nome"  />
@@ -16,6 +16,9 @@
   <div class="col-auto py-3">
     <button type="submit" class="btn btn-primary" >
       Submit
+    </button>
+    <button  class="btn btn-secondary mx-2" onclick="resetar()">
+      Cancelar
     </button>
   </div>
 </form>
