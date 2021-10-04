@@ -17,6 +17,13 @@ export class DataFormComponent implements OnInit {
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null,[Validators.required, Validators.email]],
+      cep: [null,[Validators.required]],
+      rua: [null,[Validators.required]],
+      complemento: [null],
+      numero: [null,[Validators.required]],
+      bairro: [null,[Validators.required]],
+      cidade: [null,[Validators.required]],
+      estado: [null,[Validators.required]],
     });
   }
 
@@ -30,7 +37,7 @@ export class DataFormComponent implements OnInit {
         console.log(data);
         this.resetar()
       },
-      // (error:any) => alert('deu ruim')
+    // (error:any) => alert('deu ruim')
       )
   }
 
@@ -55,6 +62,53 @@ export class DataFormComponent implements OnInit {
 
   resetar(){
     this.formulario.reset()
+  }
+
+  consultaCEP(cep:any, form: any){
+    // console.log(cep)
+    cep = cep.replace(/\D/g, '');
+
+    this.resetaDadosForm(form)
+    if (cep!= ""){
+      this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe(data => this.populaDadosForm(data, form))
+    }
+  }
+
+  populaDadosForm(data:any, formulario: any){
+    // formulario.setValue({
+    //   nome: formulario.value.nome,
+    //   email: formulario.value.email,
+    //   endereco: {
+    //     rua: data.logradouro ,
+    //     cep: data.cep,
+    //     numero: '',
+    //     bairro: data.bairro ,
+    //     cidade: data.localidade,
+    //     estado: data.uf
+    //   }
+    // });
+
+    formulario.form.patchValue({
+      endereco: {
+        rua: data.logradouro ,
+        cep: data.cep,
+        bairro: data.bairro ,
+        cidade: data.localidade,
+        estado: data.uf
+      }
+    })
+    // console.log(formulario);
+  }
+
+  resetaDadosForm(formulario:any){
+    formulario.form.patchValue({
+      endereco: {
+        rua: null ,
+        bairro: null ,
+        cidade: null,
+        estado: null
+      }
+    })
   }
 
 
