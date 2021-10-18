@@ -17,20 +17,21 @@ export class DataFormComponent implements OnInit {
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null,[Validators.required, Validators.email]],
-      cep: [null,[Validators.required]],
-      rua: [null,[Validators.required]],
-      complemento: [null],
-      numero: [null,[Validators.required]],
-      bairro: [null,[Validators.required]],
-      cidade: [null,[Validators.required]],
-      estado: [null,[Validators.required]],
+
+      endereco: this.formBuilder.group({
+        cep: [null,[Validators.required]],
+        rua: [null,[Validators.required]],
+        complemento: [null],
+        numero: [null,[Validators.required]],
+        bairro: [null,[Validators.required]],
+        cidade: [null,[Validators.required]],
+        estado: [null,[Validators.required]],
+      })
     });
   }
 
   onSubmit() {
     console.log(this.formulario);
-
-
     this.http
       .post('http://httpbin.org/post', JSON.stringify(this.formulario.value))
       .subscribe((data) => {
@@ -64,31 +65,22 @@ export class DataFormComponent implements OnInit {
     this.formulario.reset()
   }
 
-  consultaCEP(cep:any, form: any){
+  consultaCEP(){
+
+    let cep = this.formulario.get('endereco.cep')?.value
     // console.log(cep)
     cep = cep.replace(/\D/g, '');
 
-    this.resetaDadosForm(form)
+    this.resetaDadosForm()
     if (cep!= ""){
-      this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe(data => this.populaDadosForm(data, form))
+      this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe(data => this.populaDadosForm(data))
     }
   }
 
-  populaDadosForm(data:any, formulario: any){
-    // formulario.setValue({
-    //   nome: formulario.value.nome,
-    //   email: formulario.value.email,
-    //   endereco: {
-    //     rua: data.logradouro ,
-    //     cep: data.cep,
-    //     numero: '',
-    //     bairro: data.bairro ,
-    //     cidade: data.localidade,
-    //     estado: data.uf
-    //   }
-    // });
+  populaDadosForm(data:any){
+    this.formulario.patchValue
 
-    formulario.form.patchValue({
+    this.formulario.patchValue({
       endereco: {
         rua: data.logradouro ,
         cep: data.cep,
@@ -97,11 +89,14 @@ export class DataFormComponent implements OnInit {
         estado: data.uf
       }
     })
+
+    this.formulario.get('nome')?.setValue('Rafael')
+    this.formulario.get('email')?.setValue('rafaelneves@test.com')
     // console.log(formulario);
   }
 
-  resetaDadosForm(formulario:any){
-    formulario.form.patchValue({
+  resetaDadosForm(){
+    this.formulario.patchValue({
       endereco: {
         rua: null ,
         bairro: null ,
