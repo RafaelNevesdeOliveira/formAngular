@@ -1,6 +1,10 @@
+import { ConsultaCepService } from './../shared/service/consulta-cep.service';
+import { EstadoBR } from './../shared/models/estadoBR';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { DropdownService } from '../shared/service/dropdown.service';
+
 
 @Component({
   selector: 'app-data-form',
@@ -9,82 +13,107 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DataFormComponent implements OnInit {
   formulario!: FormGroup;
+  estados?: EstadoBR[] | any
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {}
+  constructor(private formBuilder: FormBuilder, private http: HttpClient,
+    private dropdownService: DropdownService, private cepService: ConsultaCepService) { }
 
   ngOnInit(): void {
     // INICIALIZADOR DO FORM E VALIDATOR
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-      email: [null,[Validators.required, Validators.email]],
+      email: [null, [Validators.required, Validators.email]],
 
       endereco: this.formBuilder.group({
-        cep: [null,[Validators.required]],
-        rua: [null,[Validators.required]],
+        cep: [null, [Validators.required]],
+        rua: [null, [Validators.required]],
         complemento: [null],
-        numero: [null,[Validators.required]],
-        bairro: [null,[Validators.required]],
-        cidade: [null,[Validators.required]],
-        estado: [null,[Validators.required]],
+        numero: [null],
+        bairro: [null, [Validators.required]],
+        cidade: [null, [Validators.required]],
+        estado: [null, [Validators.required]],
       })
     });
+
+    this.dropdownService.getEstadosBr().subscribe(dados => {
+      this.estados = dados
+      console.log(dados)
+    })
   }
 
   onSubmit() {
     console.log(this.formulario);
-    this.http
-      .post('http://httpbin.org/post', JSON.stringify(this.formulario.value))
-      .subscribe((data) => {
-        console.log(data);
-        this.resetar()
-      },
-    // (error:any) => alert('deu ruim')
-      )
+
+    if (this.formulario.valid) {
+      this.http
+        .post('http://httpbin.org/post', JSON.stringify(this.formulario.value))
+        .subscribe((data) => {
+          console.log(data);
+          this.resetar()
+        },
+          // (error:any) => alert('deu ruim')
+        )
+    } else {
+      this.verificaValidacoesForm(this.formulario)
+    }
   }
 
-  verificaValidTouched(campo: any){
+
+  verificaValidacoesForm(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(campo => {
+      console.log(campo)
+      let controle = formGroup.get(campo);
+      controle?.markAsTouched()
+      if (controle instanceof FormGroup) {
+        this.verificaValidacoesForm(controle)
+      }
+    })
+  }
+
+
+
+  verificaValidTouched(campo: any) {
     return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
 
   }
 
-  verificaEmailInvalido(){
+  verificaEmailInvalido() {
     let campoEmail = this.formulario.get('email')
-    if(campoEmail?.errors){
+    if (campoEmail?.errors) {
       return campoEmail.errors.required && campoEmail.touched
     }
   }
 
-  aplicaCssErro(campo:any){
+  aplicaCssErro(campo: any) {
     return {
       'has-error': this.verificaValidTouched(campo),
       'has-feedback': this.verificaValidTouched(campo),
     }
   }
 
-  resetar(){
+  resetar() {
     this.formulario.reset()
   }
 
-  consultaCEP(){
+  consultaCEP() {
 
-    let cep = this.formulario.get('endereco.cep')?.value
+    const cep = this.formulario.get('endereco.cep')?.value
     // console.log(cep)
-    cep = cep.replace(/\D/g, '');
 
-    this.resetaDadosForm()
-    if (cep!= ""){
-      this.http.get(`https://viacep.com.br/ws/${cep}/json`).subscribe(data => this.populaDadosForm(data))
+    if (cep != null && cep !== '') {
+      this.cepService.consultaCEP(cep)?.subscribe((dados) => this.populaDadosForm(dados))
     }
+
   }
 
-  populaDadosForm(data:any){
+  populaDadosForm(data: any) {
     this.formulario.patchValue
 
     this.formulario.patchValue({
       endereco: {
-        rua: data.logradouro ,
+        rua: data.logradouro,
         cep: data.cep,
-        bairro: data.bairro ,
+        bairro: data.bairro,
         cidade: data.localidade,
         estado: data.uf
       }
@@ -95,11 +124,11 @@ export class DataFormComponent implements OnInit {
     // console.log(formulario);
   }
 
-  resetaDadosForm(){
+  resetaDadosForm() {
     this.formulario.patchValue({
       endereco: {
-        rua: null ,
-        bairro: null ,
+        rua: null,
+        bairro: null,
         cidade: null,
         estado: null
       }

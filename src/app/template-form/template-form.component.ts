@@ -1,3 +1,4 @@
+import { ConsultaCepService } from './../shared/service/consulta-cep.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -25,7 +26,7 @@ export class TemplateFormComponent implements OnInit {
     console.log(this.usuario)
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cepService: ConsultaCepService) { }
 
   ngOnInit(): void {
   }
