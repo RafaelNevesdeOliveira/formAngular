@@ -1,10 +1,10 @@
-<form [formGroup]="formulario" (ngSubmit)="onSubmit()" >
-  <p>Proxima aula -->  102</p>
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <p>Proxima aula --> 102</p>
 
   <!-- NOME -->
   <div class="form-group col-mb-12" [ngClass]="aplicaCssErro('nome')">
     <label class="control-label" for="nome">Nome</label>
-    <input type="text" class="form-control" id="nome" formControlName="nome" placeholder="Nome"/>
+    <input type="text" class="form-control" id="nome" formControlName="nome" placeholder="Nome" />
 
     <app-campo-control-erro [mostrarErro]="verificaValidTouched('nome')" msgErro="Nome obrigatório">
     </app-campo-control-erro>
@@ -29,7 +29,7 @@
       <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cep')">
         <label class="control-label" for="cep">CEP</label>
 
-        <input type="text" class="form-control" id="cep" formControlName="cep" (blur)="consultaCEP()"/>
+        <input type="text" class="form-control" id="cep" formControlName="cep" (blur)="consultaCEP()" />
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" msgErro="CEP obrigatório">
         </app-campo-control-erro>
@@ -39,7 +39,7 @@
       <div class="col-md-5" [ngClass]="aplicaCssErro('endereco.rua')">
         <label class="control-label" for="rua">Rua</label>
 
-        <input type="rua" class="form-control" id="rua" formControlName="rua" placeholder="Rua"/>
+        <input type="rua" class="form-control" id="rua" formControlName="rua" placeholder="Rua" />
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.rua')" msgErro="Rua obrigatório">
         </app-campo-control-erro>
@@ -49,7 +49,7 @@
       <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.numero')">
         <label class="control-label" for="numero">Numero</label>
 
-        <input type="numero" class="form-control" id="numero" formControlName="numero" placeholder="Número"/>
+        <input type="numero" class="form-control" id="numero" formControlName="numero" placeholder="Número" />
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.numero')" msgErro="Numero obrigatório">
         </app-campo-control-erro>
@@ -59,9 +59,11 @@
       <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.complemenmto')">
         <label class="control-label" for="complemento">Complemento</label>
 
-        <input type="complemento" class="form-control" id="complemento" formControlName="complemento" placeholder="Complemento"/>
+        <input type="complemento" class="form-control" id="complemento" formControlName="complemento"
+          placeholder="Complemento" />
 
-        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.complemento')" msgErro="Complemento obrigatório">
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.complemento')"
+          msgErro="Complemento obrigatório">
         </app-campo-control-erro>
       </div>
     </div>
@@ -72,7 +74,7 @@
       <div class="col-md-5" [ngClass]="aplicaCssErro('endereco.bairro')">
         <label class="control-label" for="bairro">Bairro</label>
 
-        <input type="text" class="form-control" id="bairro" formControlName="bairro" placeholder="Bairro"/>
+        <input type="text" class="form-control" id="bairro" formControlName="bairro" placeholder="Bairro" />
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.bairro')" msgErro="Bairro obrigatório">
         </app-campo-control-erro>
@@ -82,7 +84,8 @@
       <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
         <label class="control-label" for="cidade">Cidade</label>
 
-        <input type="cidade" class="form-control" id="cidade" formControlName="cidade" placeholder="Cidade é Obrigatória"/>
+        <input type="cidade" class="form-control" id="cidade" formControlName="cidade"
+          placeholder="Cidade é Obrigatória" />
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cidade')" msgErro="Cidade obrigatório">
         </app-campo-control-erro>
@@ -92,7 +95,8 @@
         <label class="control-label" for="estado">Estado</label>
 
         <select class="form-select" id="estado" formControlName="estado" placeholder="Estado">
-          <option *ngFor="let estado of estados | async" [value]="estado.sigla"> {{estado.nome}} - {{estado.sigla}}</option>
+          <option *ngFor="let estado of estados | async" [value]="estado.sigla"> {{estado.nome}} - {{estado.sigla}}
+          </option>
 
         </select>
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" msgErro="Estado obrigatório">
@@ -101,27 +105,42 @@
     </div>
   </div>
 
-  <div>
-    <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cargo')">
+  <div class="form-group row">
+
+    <div class="col-md-2" [ngClass]="aplicaCssErro('cargo')">
       <label class="control-label" for="cargo">Cargo</label>
 
       <select class="form-select" id="cargo" formControlName="cargo" [compareWith]="compararCargo">
-        <option *ngFor="let cargo of cargos" [ngValue]="cargo" >{{cargo.desc}} </option>
+        <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{cargo.desc}} </option>
+      </select>
+    </div>
+
+
+    <div class="col-md-3" [ngClass]="aplicaCssErro('tecnologias')">
+      <label class="control-label" for="tecnologias">Tecnologias</label>
+
+      <select multiple class="form-select" id="tecnologias" formControlName="tecnologias" [compareWith]="compararTecnologias">
+        <option multiple *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{tecnologia.desc}} </option>
       </select>
 
     </div>
+
   </div>
 
 
+
   <div class="col-auto py-3">
-    <button type="submit" class="btn btn-primary" >
+    <button type="submit" class="btn btn-primary">
       Submit
     </button>
-    <button  class="btn btn-secondary mx-2" (click)="resetar()">
+    <button class="btn btn-secondary mx-2" (click)="resetar()">
       Cancelar
     </button>
     <button class="btn btn-warning mx-2" (click)="setarCargo()">
       Cargo
+    </button>
+    <button class="btn btn-success     mx-2" (click)="setarTecnologia()">
+      Tecnologia
     </button>
   </div>
 </form>

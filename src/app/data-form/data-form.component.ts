@@ -15,7 +15,8 @@ import { Observable } from 'rxjs';
 export class DataFormComponent implements OnInit {
   formulario!: FormGroup;
   estados?: Observable <EstadoBR[]>| any
-  cargos?: any
+  cargos?: any[];
+  tecnologias?: any[];
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient,
     private dropdownService: DropdownService, private cepService: ConsultaCepService) { }
@@ -35,7 +36,8 @@ export class DataFormComponent implements OnInit {
         cidade: [null, [Validators.required]],
         estado: [null, [Validators.required]],
       }),
-      cargo:[null]
+      cargo:[null],
+      tecnologias:[null]
     });
 
     // this.dropdownService.getEstadosBr().subscribe(dados => {
@@ -45,6 +47,7 @@ export class DataFormComponent implements OnInit {
 
     this.estados = this.dropdownService.getEstadosBr();
     this.cargos = this.dropdownService.getCargos();
+    this.tecnologias = this.dropdownService.getTecnologias();
   }
 
   onSubmit() {
@@ -143,12 +146,18 @@ export class DataFormComponent implements OnInit {
   }
 
   setarCargo(){
-    const cargo = {nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl'};
-    this.formulario.get('cargo')?.setValue(cargo)
+    this.formulario.get('cargo')?.setValue(" ")
+  }
+
+  setarTecnologia(){
+    this.formulario.get('tecnologia')?.setValue(" ")
   }
 
   compararCargo(obj1:any, obj2: any){
     return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2
   }
 
+  compararTecnologias(obj1:any, obj2: any){
+    return obj1 && obj2 ? (obj1.desc === obj2.desc) : obj1 === obj2
+  }
 }
