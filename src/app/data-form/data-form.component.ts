@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DropdownService } from '../shared/service/dropdown.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -13,7 +14,8 @@ import { DropdownService } from '../shared/service/dropdown.service';
 })
 export class DataFormComponent implements OnInit {
   formulario!: FormGroup;
-  estados?: EstadoBR[] | any
+  estados?: Observable <EstadoBR[]>| any
+  cargos?: any
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient,
     private dropdownService: DropdownService, private cepService: ConsultaCepService) { }
@@ -32,13 +34,17 @@ export class DataFormComponent implements OnInit {
         bairro: [null, [Validators.required]],
         cidade: [null, [Validators.required]],
         estado: [null, [Validators.required]],
-      })
+      }),
+      cargo:[null]
     });
 
-    this.dropdownService.getEstadosBr().subscribe(dados => {
-      this.estados = dados
-      console.log(dados)
-    })
+    // this.dropdownService.getEstadosBr().subscribe(dados => {
+    //   this.estados = dados
+    //   console.log(dados)
+    // })
+
+    this.estados = this.dropdownService.getEstadosBr();
+    this.cargos = this.dropdownService.getCargos();
   }
 
   onSubmit() {
@@ -59,6 +65,7 @@ export class DataFormComponent implements OnInit {
   }
 
 
+  // VALIDACAO
   verificaValidacoesForm(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(campo => {
       console.log(campo)
@@ -69,8 +76,6 @@ export class DataFormComponent implements OnInit {
       }
     })
   }
-
-
 
   verificaValidTouched(campo: any) {
     return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
@@ -91,10 +96,12 @@ export class DataFormComponent implements OnInit {
     }
   }
 
+  // FORM RESET
   resetar() {
     this.formulario.reset()
   }
 
+  // METODO CONSULTA CEP
   consultaCEP() {
 
     const cep = this.formulario.get('endereco.cep')?.value
@@ -135,5 +142,13 @@ export class DataFormComponent implements OnInit {
     })
   }
 
+  setarCargo(){
+    const cargo = {nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl'};
+    this.formulario.get('cargo')?.setValue(cargo)
+  }
+
+  compararCargo(obj1:any, obj2: any){
+    return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2
+  }
 
 }

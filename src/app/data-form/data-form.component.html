@@ -1,5 +1,5 @@
 <form [formGroup]="formulario" (ngSubmit)="onSubmit()" >
-  <p>Proxima aula -->  98</p>
+  <p>Proxima aula -->  102</p>
 
   <!-- NOME -->
   <div class="form-group col-mb-12" [ngClass]="aplicaCssErro('nome')">
@@ -22,9 +22,10 @@
     </app-campo-control-erro>
   </div>
 
-
+  <!-- ENDERECO -->
   <div formGroupName="endereco">
     <div class="form-group row">
+      <!-- CEP -->
       <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cep')">
         <label class="control-label" for="cep">CEP</label>
 
@@ -34,7 +35,7 @@
         </app-campo-control-erro>
 
       </div>
-
+      <!-- RUA -->
       <div class="col-md-5" [ngClass]="aplicaCssErro('endereco.rua')">
         <label class="control-label" for="rua">Rua</label>
 
@@ -44,7 +45,7 @@
         </app-campo-control-erro>
 
       </div>
-
+      <!-- NUMERO -->
       <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.numero')">
         <label class="control-label" for="numero">Numero</label>
 
@@ -54,7 +55,7 @@
         </app-campo-control-erro>
 
       </div>
-
+      <!-- COMPLEMENTO -->
       <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.complemenmto')">
         <label class="control-label" for="complemento">Complemento</label>
 
@@ -67,6 +68,7 @@
 
 
     <div class="form-group row">
+      <!-- BAIRRO -->
       <div class="col-md-5" [ngClass]="aplicaCssErro('endereco.bairro')">
         <label class="control-label" for="bairro">Bairro</label>
 
@@ -76,7 +78,7 @@
         </app-campo-control-erro>
 
       </div>
-
+      <!-- CIDADE -->
       <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
         <label class="control-label" for="cidade">Cidade</label>
 
@@ -85,32 +87,41 @@
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cidade')" msgErro="Cidade obrigatório">
         </app-campo-control-erro>
       </div>
-
+      <!-- ESTADO -->
       <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
         <label class="control-label" for="estado">Estado</label>
 
-        <input type="estado" class="form-control" id="estado" formControlName="estado" placeholder="Estado"/>
+        <select class="form-select" id="estado" formControlName="estado" placeholder="Estado">
+          <option *ngFor="let estado of estados | async" [value]="estado.sigla"> {{estado.nome}} - {{estado.sigla}}</option>
+
+        </select>
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" msgErro="Estado obrigatório">
         </app-campo-control-erro>
       </div>
     </div>
-
-
-
   </div>
 
+  <div>
+    <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cargo')">
+      <label class="control-label" for="cargo">Cargo</label>
 
+      <select class="form-select" id="cargo" formControlName="cargo" [compareWith]="compararCargo">
+        <option *ngFor="let cargo of cargos" [ngValue]="cargo" >{{cargo.desc}} </option>
+      </select>
+
+    </div>
+  </div>
 
 
   <div class="col-auto py-3">
     <button type="submit" class="btn btn-primary" >
       Submit
     </button>
-    <button  class="btn btn-secondary mx-2" onclick="resetar()">
+    <button  class="btn btn-secondary mx-2" (click)="resetar()">
       Cancelar
     </button>
-    <button class="btn btn-warning mx-2">
-      Reset
+    <button class="btn btn-warning mx-2" (click)="setarCargo()">
+      Cargo
     </button>
   </div>
 </form>
