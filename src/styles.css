@@ -1,2 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.min.css";
+
+body {
+  --text-color: #222;
+  --bkg-color: #fff;
+  --btn-txt-color: white;
+  --btn-bg-color: rgb(206, 206, 206);
+}
+body.dark-theme {
+  --text-color: #eee;
+  --bkg-color: #252222;
+  --btn-txt-color: rgb(46, 43, 43);
+  --btn-bg-color: rgb(228, 228, 228);
+}
+
+body, div,a{
+  background: var(--bkg-color);
+  margin: 0
+}
+
+h1,
+p, a, label, a {
+  color: var(--text-color);
+}
+
+
+button {
+  padding: 8px;
+  border: 1px solid white;
+  border-radius: 4px;
+  color: var(--btn-txt-color);
+  background-color: var(--btn-bg-color);
+}
+
+a {
+  padding: 8px;
+  border: 1px solid white;
+  border-radius: 4px;
+  color: var(--btn-txt-color);
+  background-color: var(--btn-bg-color);
+}

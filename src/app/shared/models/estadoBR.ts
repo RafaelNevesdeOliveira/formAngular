@@ -1,5 +1,5 @@
 export interface EstadoBR {
-  ID: number;
-  Sigla: string;
-  Nome: string;
+  id: number;
+  sigla: string;
+  nome: string;
 }

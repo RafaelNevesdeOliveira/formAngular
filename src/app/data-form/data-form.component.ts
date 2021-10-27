@@ -1,10 +1,12 @@
+import { CidadesBR } from './../shared/models/cidadesBr';
 import { ConsultaCepService } from './../shared/service/consulta-cep.service';
 import { EstadoBR } from './../shared/models/estadoBR';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DropdownService } from '../shared/service/dropdown.service';
-import { Observable } from 'rxjs';
+import { empty, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -14,8 +16,10 @@ import { Observable } from 'rxjs';
 })
 export class DataFormComponent implements OnInit {
   formulario!: FormGroup;
-  estados?: Observable <EstadoBR[]>| any
   cargos?: any[];
+  // estados?: Observable <EstadoBR[]>| any
+  estados?: EstadoBR[] | any;
+  cidades?: CidadesBR[] | any;
   tecnologias?: any[];
   newsletterOp?: any[];
   frameworks = ['Angular', 'React', 'Vue', 'Sencha ']
@@ -39,27 +43,34 @@ export class DataFormComponent implements OnInit {
         estado: [null, [Validators.required]],
       }),
 
-      cargo:[null],
-      tecnologias:[null],
-      newsletter:['s'],
+      cargo: [null],
+      tecnologias: [null],
+      newsletter: ['s'],
       // termos:[null, Validators.pattern('true')]
-      termos:[null, Validators.requiredTrue],
+      termos: [null, Validators.requiredTrue],
       frameworks: this.buildFrameworks()
-
     });
 
-    // this.dropdownService.getEstadosBr().subscribe(dados => {
-    //   this.estados = dados
-    //   console.log(dados)
-    // })
+    this.dropdownService.getCidadesBr(8).subscribe(console.log)
 
-    this.estados = this.dropdownService.getEstadosBr();
+    this.formulario.get('endereco.estado')?.valueChanges
+      .pipe(
+        tap(estado => console.log('Novo estado: ', estado)),
+        map(estado => this.estados.filter((e: { sigla: any; }) => e.sigla === estado)),
+        map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
+        switchMap((estadoId: number) => this.dropdownService.getCidadesBr(estadoId)),
+        tap(console.log)
+      )
+      .subscribe(cidades => this.cidades = cidades)
+
+    // this.estados = this.dropdownService.getEstadosBr();
+    this.dropdownService.getEstadosBr().subscribe(dados => this.estados = dados);
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
     this.newsletterOp = this.dropdownService.getNewsletter();
   }
 
-  buildFrameworks(){
+  buildFrameworks() {
     const values = this.frameworks.map(v => new FormControl(false))
 
     return this.formBuilder.array(values)
@@ -67,13 +78,21 @@ export class DataFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formulario);
+    // console.log(this.formulario);
+
+    let valueSubmit = Object.assign({}, this.formulario.value)
+
+    valueSubmit = Object.assign(valueSubmit, {
+      frameworks: valueSubmit.frameworks
+        .map((v: any, i: any) => v ? this.frameworks[i] : null)
+        .filter((v: any) => v !== null)
+    })
 
     if (this.formulario.valid) {
       this.http
-        .post('http://httpbin.org/post', JSON.stringify(this.formulario.value))
+        .post('http://httpbin.org/post', JSON.stringify(valueSubmit))
         .subscribe((data) => {
-          console.log(data);
+          // console.log(data);
           this.resetar()
         },
           // (error:any) => alert('deu ruim')
@@ -87,7 +106,7 @@ export class DataFormComponent implements OnInit {
   // VALIDACAO
   verificaValidacoesForm(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(campo => {
-      console.log(campo)
+      // console.log(campo)
       let controle = formGroup.get(campo);
       controle?.markAsTouched()
       if (controle instanceof FormGroup) {
@@ -162,19 +181,26 @@ export class DataFormComponent implements OnInit {
     })
   }
 
-  setarCargo(){
+  setarCargo() {
     this.formulario.get('cargo')?.setValue(" ")
   }
 
-  setarTecnologia(){
+  setarTecnologia() {
     this.formulario.get('tecnologia')?.setValue(" ")
   }
 
-  compararCargo(obj1:any, obj2: any){
+  compararCargo(obj1: any, obj2: any) {
     return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2
   }
 
-  compararTecnologias(obj1:any, obj2: any){
+  compararTecnologias(obj1: any, obj2: any) {
     return obj1 && obj2 ? (obj1.desc === obj2.desc) : obj1 === obj2
   }
+
+  toggleDarkTheme(): void {
+    document.body.classList.toggle('dark-theme');
+  }
+
+
+
 }

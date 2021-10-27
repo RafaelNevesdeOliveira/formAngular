@@ -80,8 +80,22 @@
         </app-campo-control-erro>
 
       </div>
+
+      <!-- ESTADO -->
+      <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
+        <label class="control-label" for="estado">Estado</label>
+
+        <select class="form-select" id="estado" formControlName="estado" placeholder="Estado">
+          <option *ngFor="let estado of estados" [value]="estado.sigla"> {{estado.nome}} -
+            {{estado.sigla}}
+          </option>
+
+        </select>
+        <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" msgErro="Estado obrigatório">
+        </app-campo-control-erro>
+      </div>
       <!-- CIDADE -->
-      <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
+      <!-- <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
         <label class="control-label" for="cidade">Cidade</label>
 
         <input type="cidade" class="form-control" id="cidade" formControlName="cidade"
@@ -89,19 +103,20 @@
 
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cidade')" msgErro="Cidade obrigatório">
         </app-campo-control-erro>
-      </div>
-      <!-- ESTADO -->
-      <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
-        <label class="control-label" for="estado">Estado</label>
+      </div> -->
 
-        <select class="form-select" id="estado" formControlName="estado" placeholder="Estado">
-          <option *ngFor="let estado of estados | async" [value]="estado.sigla"> {{estado.nome}} - {{estado.sigla}}
+      <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.cidade')">
+        <label class="control-label" for="cidade">Cidade</label>
+
+        <select class="form-select" id="cidade" formControlName="cidade" placeholder="Estado">
+          <option *ngFor="let cidade of cidades" [value]="cidade.nome"> {{cidade.nome}}
           </option>
 
         </select>
         <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.estado')" msgErro="Estado obrigatório">
         </app-campo-control-erro>
       </div>
+
     </div>
   </div>
 
@@ -119,8 +134,10 @@
     <div class="col-md-5" [ngClass]="aplicaCssErro('tecnologias')">
       <label class="control-label" for="tecnologias">Tecnologias</label>
 
-      <select multiple class="form-select" id="tecnologias" formControlName="tecnologias" [compareWith]="compararTecnologias">
-        <option multiple *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{tecnologia.desc}} </option>
+      <select multiple class="form-select" id="tecnologias" formControlName="tecnologias"
+        [compareWith]="compararTecnologias">
+        <option multiple *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{tecnologia.desc}}
+        </option>
       </select>
 
     </div>
@@ -153,18 +170,19 @@
       </div>
     </div>
 
-    <div class="col-md-4" [ngClass]="aplicaCssErro('frameworks')">
-      <label class="control-label" for="newsLetter">Frameworks</label>
-      <div id="frameworks" class="row">
-        <div class="checkbox" class="row-sm-3"
-        formArrayName="frameworks" *ngFor="formulario.get('frameworks')['controls']; let i = index;">
-        <input class="form-check-input" type="checkbox">
-          <label class="checkbox-inline" [formControlName="i"]>{{frameworks[i]}}
+    <!-- <div class="col-md-4" [ngClass]="aplicaCssErro('frameworks')">
+      <label class="label font-weight-bold">frameworks favoritos</label>
+      <div class="row">
+
+        <div class="checkbox col-md-4" formArrayName="frameworks"
+          *ngFor="let item of formulario.get('frameworks')['controls']; let i = index">
+
+          <label [for]="frameworks[i]" class="checkbox-inline">
+            <input [id]="frameworks[i]" type="checkbox" [formControlName]="i"> {{ frameworks[i] }}
           </label>
         </div>
-
       </div>
-    </div>
+    </div> -->
 
   </div>
 
@@ -177,12 +195,12 @@
     <button class="btn btn-secondary mx-2" (click)="resetar()">
       Cancelar
     </button>
-    <button class="btn btn-warning mx-2" (click)="setarCargo()">
+    <!-- <button class="btn btn-warning mx-2" (click)="setarCargo()">
       Cargo
     </button>
     <button class="btn btn-success     mx-2" (click)="setarTecnologia()">
       Tecnologia
-    </button>
+    </button> -->
   </div>
 </form>
 

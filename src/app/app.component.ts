@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'formAngular';
+
+  toggleDarkTheme(): void {
+    document.body.classList.toggle('dark-theme');
+  }
 }
