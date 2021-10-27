@@ -1,7 +1,7 @@
 import { ConsultaCepService } from './../shared/service/consulta-cep.service';
 import { EstadoBR } from './../shared/models/estadoBR';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DropdownService } from '../shared/service/dropdown.service';
 import { Observable } from 'rxjs';
@@ -17,6 +17,8 @@ export class DataFormComponent implements OnInit {
   estados?: Observable <EstadoBR[]>| any
   cargos?: any[];
   tecnologias?: any[];
+  newsletterOp?: any[];
+  frameworks = ['Angular', 'React', 'Vue', 'Sencha ']
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient,
     private dropdownService: DropdownService, private cepService: ConsultaCepService) { }
@@ -36,8 +38,14 @@ export class DataFormComponent implements OnInit {
         cidade: [null, [Validators.required]],
         estado: [null, [Validators.required]],
       }),
+
       cargo:[null],
-      tecnologias:[null]
+      tecnologias:[null],
+      newsletter:['s'],
+      // termos:[null, Validators.pattern('true')]
+      termos:[null, Validators.requiredTrue],
+      frameworks: this.buildFrameworks()
+
     });
 
     // this.dropdownService.getEstadosBr().subscribe(dados => {
@@ -48,6 +56,14 @@ export class DataFormComponent implements OnInit {
     this.estados = this.dropdownService.getEstadosBr();
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletterOp = this.dropdownService.getNewsletter();
+  }
+
+  buildFrameworks(){
+    const values = this.frameworks.map(v => new FormControl(false))
+
+    return this.formBuilder.array(values)
+
   }
 
   onSubmit() {
@@ -84,6 +100,7 @@ export class DataFormComponent implements OnInit {
     return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched
 
   }
+
 
   verificaEmailInvalido() {
     let campoEmail = this.formulario.get('email')
